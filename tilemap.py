@@ -8,8 +8,13 @@ class Tile:
         self.interactable = interactable
         self.type = tile_type
         self.name = str(pos[0]) + ','+ str(pos[1])
-
+        self.size = size
         self.sprite = load_sprite(game, tile_type, size)
+
+
+    def rect(self):
+        return pygame.Rect(*self.pos, *self.size)
+
 
     def render(self, surf):
         surf.blit(self.sprite, self.pos)
@@ -29,7 +34,6 @@ class Tilemap:
                 x = i + initial_pos[0]
                 y = j + initial_pos[1]
                 if char == '1':
-                    print('hi')
                     game.tiles[(x,y)] = Tile(game, [x,y], 'default_tile', (game.TILESIZE,game.TILESIZE))
                 i+=1
             j+=1

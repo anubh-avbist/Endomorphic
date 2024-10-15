@@ -1,7 +1,7 @@
 import sys
 
 import pygame
-from entity import Entity
+from player import Player
 from tilemap import Tilemap, Tile
 
 '''.git/
@@ -19,6 +19,7 @@ class Game:
         UPSCALE = 6
         DISPLAY_SIZE = (320,240)
         SCREEN_SIZE = (320*UPSCALE, 240*UPSCALE)
+
         pygame.init()
         pygame.display.set_caption('Ball Test')
         self.screen = pygame.display.set_mode(SCREEN_SIZE)
@@ -34,12 +35,21 @@ class Game:
         }
         self.tiles = {
             (8,8): Tile(self,[8,8],'default_tile', (self.TILESIZE,self.TILESIZE)),
-            (9,8): Tile(self,[9,8],'default_tile', (self.TILESIZE,self.TILESIZE)),
-            (10,8): Tile(self,[10,8],'default_tile', (self.TILESIZE,self.TILESIZE))
-        
         }
 
-        self.player = Entity(self, 'player', (5*self.TILESIZE,5*self.TILESIZE), 'ball', (self.TILESIZE,self.TILESIZE))
+        self.player = Player(self, 'player', (5*self.TILESIZE,5*self.TILESIZE), 'ball', (self.TILESIZE,self.TILESIZE))
+    
+    def get_close_tiles(self, pos, scaled = False):
+        tiles = []
+        x = int(pos[0]//self.TILESIZE)
+        y = int(pos[1]//self.TILESIZE)
+        permutations = [(-1,-1), (0,-1), (1,-1), (-1,0), (0,0), (1,0), (-1,1), (0,1), (1,1)]
+        for permutation in permutations:
+            key = (x+permutation[0], y+permutation[1])
+            if key in game.tiles:
+                tiles.append(game.tiles[(x+permutation[0], y+permutation[1])])
+
+        return tiles
         
     def run(self):
         while True:
