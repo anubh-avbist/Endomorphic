@@ -1,5 +1,6 @@
 import pygame
 from utils import load_sprite
+from bezier import Bezier
 
 class Player:
     def __init__(self, game, name, pos, sprite, size):
@@ -9,9 +10,16 @@ class Player:
         self.size = size
         self.pos = list(pos)
         self.velocity = [0,0]
+
         self.speed = 2
         self.rotation = 0
         self.collisions = {'down' : False, 'right': False, 'up': False, 'left': False}
+        self.frame_movement = [0,0]
+        self.legs = []
+
+
+        self.jump_frame = False
+        self.jump_height = 2
 
     def rect(self):
         return pygame.Rect(*self.pos, *self.size)
@@ -28,6 +36,7 @@ class Player:
         close_tiles = self.game.get_close_tiles(self.pos)
         horizontal_movement = (self.velocity[0] + movement[0])*self.speed
         self.pos[0] += horizontal_movement
+        self.frame_movement[0] = horizontal_movement
         current_rect = self.rect()
         for tile in close_tiles:
             if tile.interactable is True:
@@ -46,7 +55,16 @@ class Player:
 
         # Vertical Movement
         close_tiles = self.game.get_close_tiles(self.pos)
-        self.pos[1] += (self.velocity[1] + movement[1])*self.speed
+
+        if self.jump_frame is True:
+            print("HI")
+            self.jump_frame = False
+            self.velocity[1] = -self.jump_height
+
+        vertical_movement = (self.velocity[1] + movement[1])*self.speed
+        self.pos[1] += vertical_movement
+
+        self.frame_movement[1] = vertical_movement
         current_rect = self.rect()
         for tile in close_tiles:
             if tile.interactable is True:
@@ -62,20 +80,32 @@ class Player:
 
 
         # Gravity
-        self.velocity[1] = max(2,self.velocity[1]+0.01)
+        self.velocity[1] = min(2,self.velocity[1]+0.1)
 
         if self.collisions['up'] or self.collisions['down']:
             self.velocity[1] = 0
 
+        self.render(self.game.display)
 
-
-        
+    def jump(self):
+        self.jump_frame = True
 
     def render(self, display):
+        frame_rotation = 0
+
         if self.collisions['down']:
-            if self.velocity[0] > 0:
-                self.rotation += 1
-            if self.velocity[0] < 0:
-                self.rotation -= 1
-        self.sprite = pygame.transform.rotate(self.sprite, self.rotation)
+            if self.frame_movement[0] > 0:
+                frame_rotation -= 10
+            if self.frame_movement[0] < 0:
+                frame_rotation += 10
+        self.rotation += frame_rotation
+
+        
+        #self.sprite = pygame.transform.rotate(self.sprite, frame_rotation)
+        #self.sprite = pygame.transform.rotate(self.sprite, 10)
+        #rotated_sprite = pygame.transform.rotate(self.sprite,self.rotation)
+        
         display.blit(self.sprite, self.pos)
+
+
+

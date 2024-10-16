@@ -3,6 +3,7 @@ import sys
 import pygame
 from player import Player
 from tilemap import Tilemap, Tile
+from bezier import Bezier
 
 '''.git/
 
@@ -16,9 +17,9 @@ class Game:
     def __init__(self):
 
         self.TILESIZE = 16
-        UPSCALE = 6
+        self.UPSCALE = 6
         DISPLAY_SIZE = (320,240)
-        SCREEN_SIZE = (320*UPSCALE, 240*UPSCALE)
+        SCREEN_SIZE = (320*self.UPSCALE, 240*self.UPSCALE)
 
         pygame.init()
         pygame.display.set_caption('Ball Test')
@@ -28,16 +29,28 @@ class Game:
 
 
 
-        self.movement = [False,False]
         self.assets = {
             'ball' : pygame.image.load('assets/images/Ball.png'),
             'default_tile' : pygame.image.load('assets/images/Tile.png')
         }
+
         self.tiles = {
             (8,8): Tile(self,[8,8],'default_tile', (self.TILESIZE,self.TILESIZE)),
         }
 
+
+
+
+
+        self.movement = [False,False]
         self.player = Player(self, 'player', (5*self.TILESIZE,5*self.TILESIZE), 'ball', (self.TILESIZE,self.TILESIZE))
+
+
+        self.bez = Bezier(self, [[50,50], [100,75]], (50,10,20))
+
+        self.level = Tilemap(self, (0,1), 'assets/maps/map.txt')
+            
+
     
     def get_close_tiles(self, pos, scaled = False):
         tiles = []
@@ -56,7 +69,6 @@ class Game:
 
             self.display.fill((50,70,150))
             self.player.update([self.movement[1] - self.movement[0],0])
-            self.player.render(self.display)
 
 
             for key in self.tiles:
@@ -64,7 +76,6 @@ class Game:
                 tile.render(self.display)
 
 
-            level = Tilemap(game, (0,1), 'assets/maps/map.txt')
 
             # INPUT
 
@@ -74,24 +85,33 @@ class Game:
                     sys.exit()
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RIGHT:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         self.movement[1] = True
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = True
+                    if event.key == pygame.K_SPACE:
+                        self.player.jump()
+
                     if event.key == pygame.K_q:
                         pygame.quit()
                         sys.exit()
                 if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_RIGHT:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         self.movement[1] = False
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = False
+                
 
 
+            self.bez.draw(self.display)
+            self.bez.dummy_update()
 
+            
             self.screen.blit(pygame.transform.scale((self.display),self.screen.get_size()), (0,0))
             pygame.display.update()
             self.clock.tick(60)
+
+
 
 
 
