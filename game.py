@@ -4,18 +4,11 @@ import pygame
 from scripts.player import Player
 from scripts.tilemap import Tilemap, Tile
 from scripts.bezier import Bezier
-
-'''.git/
-
-git remote add origin https://github.com/anubh-avbist/ninja_game.git
-git branch -M main
-git push -u origin main
-
-'''
+from scripts.leg import Leg
 
 class Game:
     def __init__(self):
-
+        self.FPS = 60
         self.TILESIZE = 16
         self.UPSCALE = 6
         DISPLAY_SIZE = (320,240)
@@ -27,8 +20,6 @@ class Game:
         self.display = pygame.Surface(DISPLAY_SIZE)
         self.clock = pygame.time.Clock()
 
-
-
         self.assets = {
             'ball' : pygame.image.load('assets/images/Ball.png'),
             'default_tile' : pygame.image.load('assets/images/Tile.png')
@@ -38,31 +29,12 @@ class Game:
             (8,8): Tile(self,[8,8],'default_tile', (self.TILESIZE,self.TILESIZE)),
         }
 
-
-
-
-
         self.movement = [[False,False],[False,False]]
         self.player = Player(self, 'player', (5*self.TILESIZE,5*self.TILESIZE), 'ball', (self.TILESIZE,self.TILESIZE))
-
-
-        #self.bez = Bezier(self, [[50,50], [100,75]], (50,10,20))
+        self.player.legs.append(Leg(self, [[50,50], [100, 0], [50,150]], 50, (30,30,30), 2, 50))
 
         self.level = Tilemap(self, (0,1), 'assets/maps/map.txt')
             
-
-    
-    def get_close_tiles(self, pos, scaled = False):
-        tiles = []
-        x = int(pos[0]//self.TILESIZE)
-        y = int(pos[1]//self.TILESIZE)
-        permutations = [(-1,-1), (0,-1), (1,-1), (-1,0), (0,0), (1,0), (-1,1), (0,1), (1,1)]
-        for permutation in permutations:
-            key = (x+permutation[0], y+permutation[1])
-            if key in game.tiles:
-                tiles.append(game.tiles[(x+permutation[0], y+permutation[1])])
-
-        return tiles
         
     def run(self):
         while True:
@@ -105,12 +77,18 @@ class Game:
                 tile = self.tiles[key]
                 tile.render(self.display)
 
+            for leg in self.player.legs:
+                leg.update()
+                leg.draw(self.display)
+
+
+            self.player.render(self.display)
+
+
 
             self.screen.blit(pygame.transform.scale((self.display),self.screen.get_size()), (0,0))
             pygame.display.update()
-            self.clock.tick(60)
-
+            self.clock.tick(self.FPS)
 
 game = Game()
-
 game.run()

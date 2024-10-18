@@ -1,6 +1,7 @@
 import pygame
 from scripts.utils import load_sprite
 from scripts.bezier import Bezier
+import math
 
 class Player:
     def __init__(self, game, name, pos, sprite, size):
@@ -22,9 +23,30 @@ class Player:
         self.jump_height = 2
         self.allowed_jumps = 1
 
+        self.time = 0
+
+    def vertical_offset(self):
+        return 2*math.sin(self.time)
+
+    def center(self):
+        return [self.pos[0] + self.size[0]/2, self.pos[1] + self.size[1]/2]
+
+
     def rect(self):
         return pygame.Rect(*self.pos, *self.size)
 
+
+    def get_close_tiles(self, pos):
+        tiles = []
+        x = int(pos[0]//self.game.TILESIZE)
+        y = int(pos[1]//self.game.TILESIZE)
+        permutations = [(-1,-1), (0,-1), (1,-1), (-1,0), (0,0), (1,0), (-1,1), (0,1), (1,1)]
+        for permutation in permutations:
+            key = (x+permutation[0], y+permutation[1])
+            if key in self.game.tiles:
+                tiles.append(self.game.tiles[(x+permutation[0], y+permutation[1])])
+
+        return tiles
 
     def update(self, movement):
         self.collisions = {'down' : False, 'right': False, 'up': False, 'left': False}
@@ -34,7 +56,7 @@ class Player:
         # Horizontal Movement
         self.pos[0] += self.frame_movement[0]
         current_rect = self.rect()
-        for tile in self.game.get_close_tiles(self.pos):
+        for tile in self.get_close_tiles(self.pos):
             if tile.interactable is True:
                 if self.rect().colliderect(tile.rect()):
                     if self.frame_movement[0] > 0:
@@ -51,7 +73,7 @@ class Player:
         # Vertical Movement       
         self.pos[1] += self.frame_movement[1]
         current_rect = self.rect()
-        for tile in self.game.get_close_tiles(self.pos):
+        for tile in self.get_close_tiles(self.pos):
             if tile.interactable is True:
                 if self.rect().colliderect(tile.rect()):
                     if self.frame_movement[1] > 0:
@@ -65,19 +87,18 @@ class Player:
                     self.pos[1] = current_rect.y
 
 
+
         # Gravity
         self.velocity[1] = min(3,self.velocity[1]+0)
 
         if self.collisions['up'] or self.collisions['down']:
             self.velocity[1] = 0
-        
 
-        # Legs
-        for leg in self.legs:
-            leg.update()
+        # Time
+        self.time += 0.05
+        if self.time > math.pi*2:
+            self.time -= math.pi*2
 
-
-        self.render(self.game.display)
 
     def jump(self):
         if self.allowed_jumps:
@@ -99,7 +120,7 @@ class Player:
         #self.sprite = pygame.transform.rotate(self.sprite, 10)
         #rotated_sprite = pygame.transform.rotate(self.sprite,self.rotation)
         
-        display.blit(self.sprite, self.pos)
+        display.blit(self.sprite, (self.pos[0], self.pos[1] + self.vertical_offset()))
 
 
 
