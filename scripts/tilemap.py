@@ -1,5 +1,5 @@
 import pygame
-from utils import load_sprite
+from scripts.utils import load_sprite
 
 class Tile:
     def __init__(self, game, pos, tile_type, size, interactable = True):
