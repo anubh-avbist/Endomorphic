@@ -30,10 +30,12 @@ class Game:
         }
 
         self.movement = [[False,False],[False,False]]
-        self.player = Player(self, 'player', (5*self.TILESIZE,5*self.TILESIZE), 'ball', (self.TILESIZE,self.TILESIZE))
-        self.player.legs.append(Leg(self, [[50,50], [100, 0], [50,150]], 50, (30,30,30), 2, 50))
+        self.player = Player(self, 'player', (5*self.TILESIZE,5*self.TILESIZE), 'ball', (self.TILESIZE*4/5,self.TILESIZE*4/5))
+        self.player.legs.append(Leg(self, [[50,50], [100, 0], [50,150]], 30, (30,30,30), 2, 50))
+        #self.player.legs.append(Leg(self, [[300,300], [100, 0], [500,150]], 30, (30,30,30), 2, 50))
 
         self.level = Tilemap(self, (0,1), 'assets/maps/map.txt')
+        self.delta_time = 1
             
         
     def run(self):
@@ -88,7 +90,8 @@ class Game:
 
             self.screen.blit(pygame.transform.scale((self.display),self.screen.get_size()), (0,0))
             pygame.display.update()
-            self.clock.tick(self.FPS)
+            self.delta_time = self.clock.tick(self.FPS)
+            #print(self.clock.get_fps())
 
 game = Game()
 game.run()

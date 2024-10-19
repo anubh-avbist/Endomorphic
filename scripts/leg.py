@@ -2,6 +2,7 @@ import pygame
 import math
 from scripts.bezier import Bezier
 import random
+from scripts.utils import raycast
 
 class Leg(Bezier):
     def __init__(self, game, points, length, color = (0,0,0), pixel_size = 2, segments = 100):
@@ -21,7 +22,7 @@ class Leg(Bezier):
         self.destination = [0,0]
         self.ray = [0,self.length]
         self.transitioning = False
-        self.transition_time = 0.2
+        self.transition_time = 0.4
         self.timer = 0
         self.foot_path = Bezier(self.game, [[0,0], [0,0], [0,0]])
 
@@ -49,6 +50,9 @@ class Leg(Bezier):
                 self.timer = 0
                 self.foot_path.points[0] = end
 
+                # Destination
+            self.pick_destination(start)
+
 
             # Snap leg to circle
             direction = self.length*pygame.Vector2.normalize(direction)
@@ -56,13 +60,13 @@ class Leg(Bezier):
             new_end = start + direction
             self.points[self.degree] = [new_end.x, new_end.y]
 
+        
+
+
         # If transitioning
         if self.transitioning:
             self.transition()
 
-
-        # Destination
-        self.pick_destination(start)
 
 
         # Joint
@@ -73,6 +77,8 @@ class Leg(Bezier):
         self.points[1] = self.points[0] + (direction/2) + perpendicular
 
     def pick_destination(self, start):
+        self.foot_path.points[0] = self.points[self.degree]
+        self.timer = 0
         if self.game.player.frame_movement[0] > 0 :
             self.ray[0] = 1
         elif self.game.player.frame_movement[0] < 0:
@@ -82,16 +88,24 @@ class Leg(Bezier):
         self.ray[1] = 1
         self.ray = pygame.Vector2.normalize(pygame.Vector2(self.ray))*self.length*0.8
 
+
+        
+
+
         self.destination = start + self.ray
 
     def transition(self):
-            self.timer += self.game.clock.tick(self.game.FPS)/1000
+            self.timer += self.game.delta_time/1000
             t = self.timer/self.transition_time
 
             # Create Foot Path:
             self.foot_path.points = [self.foot_path.points[0], self.game.player.center(), self.destination]
 
             self.points[self.degree] = self.foot_path.fun(t)
+
+            if pygame.Vector2.magnitude(pygame.Vector2(self.points[self.degree])-pygame.Vector2(self.points[0])) > self.length:
+                self.pick_destination(self.points[self.degree])
+                self.timer = 0
 
             
             if t>=1: 
@@ -106,3 +120,5 @@ class Leg(Bezier):
             t += division
 
         pygame.draw.rect(surf, (50,255,50), (*self.destination, self.pixel_size,self.pixel_size))
+        pygame.draw.rect(surf, (255,50,50), (*self.foot_path.points[0], self.pixel_size,self.pixel_size))
+        #pygame.draw.rect(surf, (50,50,255), (*self.foot_path.points[2], self.pixel_size,self.pixel_size))

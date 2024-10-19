@@ -26,7 +26,7 @@ class Player:
         self.time = 0
 
     def vertical_offset(self):
-        return 2*math.sin(self.time)
+        return 0 #2*math.sin(self.time)
 
     def center(self):
         return [self.pos[0] + self.size[0]/2, self.pos[1] + self.size[1]/2]
@@ -36,11 +36,11 @@ class Player:
         return pygame.Rect(*self.pos, *self.size)
 
 
-    def get_close_tiles(self, pos):
+    def get_close_tiles(self):
         tiles = []
-        x = int(pos[0]//self.game.TILESIZE)
-        y = int(pos[1]//self.game.TILESIZE)
-        permutations = [(-1,-1), (0,-1), (1,-1), (-1,0), (0,0), (1,0), (-1,1), (0,1), (1,1)]
+        x = int(self.pos[0]//self.game.TILESIZE)
+        y = int(self.pos[1]//self.game.TILESIZE)
+        permutations = [(-2,-2),(-1,-1), (0,-1), (1,-1), (-1,0), (0,0), (1,0), (-1,1), (0,1), (1,1)]
         for permutation in permutations:
             key = (x+permutation[0], y+permutation[1])
             if key in self.game.tiles:
@@ -56,7 +56,7 @@ class Player:
         # Horizontal Movement
         self.pos[0] += self.frame_movement[0]
         current_rect = self.rect()
-        for tile in self.get_close_tiles(self.pos):
+        for tile in self.get_close_tiles():
             if tile.interactable is True:
                 if self.rect().colliderect(tile.rect()):
                     if self.frame_movement[0] > 0:
@@ -73,7 +73,7 @@ class Player:
         # Vertical Movement       
         self.pos[1] += self.frame_movement[1]
         current_rect = self.rect()
-        for tile in self.get_close_tiles(self.pos):
+        for tile in self.get_close_tiles():
             if tile.interactable is True:
                 if self.rect().colliderect(tile.rect()):
                     if self.frame_movement[1] > 0:

@@ -5,3 +5,6 @@ def load_sprite(game, sprite, size):
 
 def rotate_sprite(sprite, angle):
     pass
+
+def raycast():
+    pass
