@@ -35,6 +35,7 @@ class Game:
         #self.player.legs.append(Leg(self, [[300,300], [100, 0], [500,150]], 30, (30,30,30), 2, 50))
 
         self.level = Tilemap(self, (0,1), 'assets/maps/map.txt')
+
         self.delta_time = 1
             
         

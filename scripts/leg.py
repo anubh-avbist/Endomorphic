@@ -2,7 +2,7 @@ import pygame
 import math
 from scripts.bezier import Bezier
 import random
-from scripts.utils import raycast
+from scripts.utils import raycast, Line
 
 class Leg(Bezier):
     def __init__(self, game, points, length, color = (0,0,0), pixel_size = 2, segments = 100):
@@ -22,7 +22,7 @@ class Leg(Bezier):
         self.destination = [0,0]
         self.ray = [0,self.length]
         self.transitioning = False
-        self.transition_time = 0.4
+        self.transition_time = 0.25
         self.timer = 0
         self.foot_path = Bezier(self.game, [[0,0], [0,0], [0,0]])
 
@@ -79,20 +79,18 @@ class Leg(Bezier):
     def pick_destination(self, start):
         self.foot_path.points[0] = self.points[self.degree]
         self.timer = 0
+
+        direction = [0,1]
         if self.game.player.frame_movement[0] > 0 :
-            self.ray[0] = 1
+            direction[0] = 1
         elif self.game.player.frame_movement[0] < 0:
-            self.ray[0] = -1
-        else:
-            self.ray[0] = 0
-        self.ray[1] = 1
-        self.ray = pygame.Vector2.normalize(pygame.Vector2(self.ray))*self.length*0.8
+            direction[0] = -1
+        # self.ray = pygame.Vector2.normalize(pygame.Vector2(*direction))*self.length*0.9
 
+        cast = Line(self.game.player.center(), pygame.Vector2(direction[0], direction[1]))
+        self.destination = raycast(self.game, cast, self.length, self.game.TILESIZE, self.game.tiles)
 
-        
-
-
-        self.destination = start + self.ray
+        #self.destination = start + self.ray
 
     def transition(self):
             self.timer += self.game.delta_time/1000
@@ -111,6 +109,9 @@ class Leg(Bezier):
             if t>=1: 
                 self.transitioning = False
     
+    def debug(self, surf):
+        pygame.draw.rect(surf, (50,255,50), (*self.destination, self.pixel_size,self.pixel_size))
+        pygame.draw.rect(surf, (255,50,50), (*self.foot_path.points[0], self.pixel_size,self.pixel_size))
 
     def draw(self, surf):
         division = 1/self.segments
@@ -119,6 +120,5 @@ class Leg(Bezier):
             pygame.draw.rect(surf,self.color, (*self.fun(t), self.pixel_size,self.pixel_size))
             t += division
 
-        pygame.draw.rect(surf, (50,255,50), (*self.destination, self.pixel_size,self.pixel_size))
-        pygame.draw.rect(surf, (255,50,50), (*self.foot_path.points[0], self.pixel_size,self.pixel_size))
-        #pygame.draw.rect(surf, (50,50,255), (*self.foot_path.points[2], self.pixel_size,self.pixel_size))
+        self.debug(surf)
+        
