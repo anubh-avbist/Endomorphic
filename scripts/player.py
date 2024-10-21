@@ -3,7 +3,7 @@ import math
 import pygame
 
 from common import Game_t as Game
-from common import MapCoordinates
+from common import MapCoordinates, Vector2Like
 from scripts.bezier import Bezier
 from scripts.leg import Leg
 from scripts.tilemap import Tile
@@ -35,10 +35,8 @@ class Player:
     def vertical_offset(self) -> int:
         return 0 #2*math.sin(self.time)
 
-    def center(self) -> list[int]:
+    def center(self) -> Vector2Like:
         return [self.pos[0] + self.size[0]/2, self.pos[1] + self.size[1]/2]
-
-
 
     def rect(self) -> pygame.Rect:
         return pygame.Rect(*self.pos, *self.size)

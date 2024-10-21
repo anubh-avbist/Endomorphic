@@ -31,7 +31,7 @@ class Game:
         }
 
         self.tiles: dict[MapCoordinates, Tile] = {
-            (8,8): Tile(self,[8,8],'default_tile', (self.TILESIZE,self.TILESIZE)),
+            (8,8): Tile(self,(8,8),'default_tile', (self.TILESIZE,self.TILESIZE)),
         }
 
         self.movement = [[False,False],[False,False]]

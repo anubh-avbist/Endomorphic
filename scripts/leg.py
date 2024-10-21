@@ -114,7 +114,7 @@ class Leg(Bezier):
         pygame.draw.rect(surf, (255,50,50), (*self.foot_path.points[0], self.pixel_size,self.pixel_size))
         pygame.draw.line(surf, (50,50,255), self.ray.start, self.ray.r(self.length))
 
-    def draw(self, surf):
+    def draw(self, surf: pygame.Surface):
         division = 1/self.segments
         t = 0
         for i in range(self.segments):

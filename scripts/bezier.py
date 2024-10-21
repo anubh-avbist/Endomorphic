@@ -20,7 +20,7 @@ class Bezier:
         self.start = self.points[0]
         self.end = self.points[self.degree]
 
-    def fun(self, t: int | float) -> list[float]:
+    def fun(self, t: int | float) -> Vector2Like:
         output = [0.,0.]
         
         for i, point in enumerate(self.points):

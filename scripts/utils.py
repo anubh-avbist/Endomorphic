@@ -30,22 +30,22 @@ class Line():
         else: 
             return -1
 
-    def get_intersection(self, other_line):
+    def get_intersection(self, other_line: 'Line') -> pygame.Vector2:
         return self.r(self.get_intersection_parameter(other_line))
 
     def draw(self, surf: pygame.Surface, range):
         pygame.draw.line(surf, (0,0,0), self.start + self.direction*range[0], self.start + self.direction*range[1])
 
-def load_sprite(game, sprite, size):
+def load_sprite(game: Game, sprite: str, size: Vector2Like) -> pygame.Surface:
     return pygame.transform.scale(game.assets[sprite], (size))
 
 def rotate_sprite(sprite, angle):
     pass
 
-def raycast(game, line: Line, length: int, step: int | float, tileset: dict[MapCoordinates, Any]) -> Vector2Like:
+def raycast(game: Game, line: Line, length: int, step: int | float, tileset: dict[MapCoordinates, Any]) -> Vector2Like:
     line.direction = line.direction.normalize()
 
-    distance: int | float = 0 # Moves by one TILESIZE/2
+    distance = 0 # Moves by one TILESIZE/2
     current = line.start + line.direction * step
     tile = None
     while distance <= length:
