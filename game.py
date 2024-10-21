@@ -5,12 +5,13 @@ from scripts.player import Player
 from scripts.tilemap import Tilemap, Tile
 from scripts.bezier import Bezier
 from scripts.leg import Leg
+from scripts.utils import Line
 
 class Game:
     def __init__(self):
         self.FPS = 60
         self.TILESIZE = 16
-        self.UPSCALE = 6
+        self.UPSCALE = 4
         DISPLAY_SIZE = (320,240)
         SCREEN_SIZE = (320*self.UPSCALE, 240*self.UPSCALE)
 
@@ -31,12 +32,15 @@ class Game:
 
         self.movement = [[False,False],[False,False]]
         self.player = Player(self, 'player', (5*self.TILESIZE,5*self.TILESIZE), 'ball', (self.TILESIZE*4/5,self.TILESIZE*4/5))
-        self.player.legs.append(Leg(self, [[50,50], [100, 0], [50,150]], 30, (30,30,30), 2, 50))
+        self.player.legs.append(Leg(self, [[50,50], [100, 0], [50,150]], 50, (30,30,30), 2, 50))
         #self.player.legs.append(Leg(self, [[300,300], [100, 0], [500,150]], 30, (30,30,30), 2, 50))
 
         self.level = Tilemap(self, (0,1), 'assets/maps/map.txt')
 
         self.delta_time = 1
+
+        self.debug = {"key": "value"}
+
             
         
     def run(self):
@@ -59,7 +63,7 @@ class Game:
                     if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.movement[1][0] = True
                     if event.key == pygame.K_SPACE:
-                        #self.player.jump()
+                        self.player.jump()
                         pass
 
                     if event.key == pygame.K_q:
@@ -87,12 +91,25 @@ class Game:
 
             self.player.render(self.display)
 
+            for key in self.tiles:
+                tile = self.tiles[key]
+                for edge in tile.edges:
+                    #edge.draw(self.display, [0,self.TILESIZE])
+                    pass
 
+
+            if 'highlight' in self.debug:
+                
+                tile = self.debug['highlight']
+                for edge in tile.edges:
+                    edge.draw(self.display, [0,self.TILESIZE])
+                pass
 
             self.screen.blit(pygame.transform.scale((self.display),self.screen.get_size()), (0,0))
             pygame.display.update()
             self.delta_time = self.clock.tick(self.FPS)
             #print(self.clock.get_fps())
+
 
 game = Game()
 game.run()

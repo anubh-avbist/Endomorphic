@@ -14,8 +14,8 @@ class Tile:
         if interactable:
             self.edges.append(Line(pygame.Vector2(self.pos),pygame.Vector2(1,0)))
             self.edges.append(Line(pygame.Vector2(self.pos),pygame.Vector2(0,1)))
-            self.edges.append(Line(pygame.Vector2(self.pos) + pygame.Vector2(self.size, self.size),pygame.Vector2(1,0)))
-            self.edges.append(Line(pygame.Vector2(self.pos) + pygame.Vector2(self.size, self.size),pygame.Vector2(0,1)))
+            self.edges.append(Line(pygame.Vector2(self.pos) + pygame.Vector2(self.size, self.size),pygame.Vector2(-1,0)))
+            self.edges.append(Line(pygame.Vector2(self.pos) + pygame.Vector2(self.size, self.size),pygame.Vector2(0,-1)))
 
 
     def rect(self):

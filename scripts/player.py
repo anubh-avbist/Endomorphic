@@ -89,7 +89,7 @@ class Player:
 
 
         # Gravity
-        self.velocity[1] = min(3,self.velocity[1]+0)
+        self.velocity[1] = min(3,self.velocity[1]+0.1)
 
         if self.collisions['up'] or self.collisions['down']:
             self.velocity[1] = 0
