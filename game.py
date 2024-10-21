@@ -3,13 +3,13 @@ from typing import Any
 
 import pygame
 
+from common import MapCoordinates
 from scripts.bezier import Bezier
 from scripts.leg import Leg
 from scripts.player import Player
 from scripts.tilemap import Tile, Tilemap
 from scripts.utils import Line
 
-from common import MapCoordinates
 
 class Game:
     def __init__(self):

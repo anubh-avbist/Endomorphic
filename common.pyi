@@ -1,16 +1,16 @@
-from typing import Sequence, Tuple, Union
+from typing import Any, List, Sequence, Tuple
 
 from pygame import Color, Surface, Vector2
 from pygame.time import Clock
 
+from game import Game as BaseGame
 from scripts.player import Player
 from scripts.tilemap import Tile, Tilemap
-from game import Game as BaseGame
 
 RGBAOutput = Tuple[int, int, int, int]
-ColorValue = Union[Color, int, str, Tuple[int, int, int], RGBAOutput, Sequence[int]]
+ColorValue = Color | int | str | Tuple[int, int, int] | RGBAOutput | Sequence[int]
 
-IntoVector2 = str | float | Sequence[float] | Vector2
+Vector2Like = Vector2 | Tuple[int | float, int | float] | List[int | float]
 
 MapCoordinates = Tuple[int, int]
 
@@ -30,6 +30,6 @@ class Game:
     player: Player
     level: Tilemap
     delta_time: int
-
+    debug: dict[str, Any]
 
 Game_t = Game | BaseGame

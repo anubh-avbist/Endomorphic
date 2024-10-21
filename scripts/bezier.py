@@ -1,9 +1,15 @@
-import pygame
 import math
 import random
 
+import pygame
+
+from common import ColorValue
+from common import Game_t as Game
+from common import Vector2Like
+
+
 class Bezier:
-    def __init__(self, game, points: list, color = (0,0,0), pixel_size = 1, segments = 100):
+    def __init__(self, game: Game, points: list[Vector2Like], color: ColorValue = (0,0,0), pixel_size = 1, segments = 100):
         self.game = game
         self.points = points
         self.color = color
@@ -14,13 +20,13 @@ class Bezier:
         self.start = self.points[0]
         self.end = self.points[self.degree]
 
-    def fun(self, t):
-        output = [0,0]
+    def fun(self, t: int | float) -> list[float]:
+        output = [0.,0.]
         
-        for i in range(0,len(self.points)):
+        for i, point in enumerate(self.points):
             multiplier = math.comb(self.degree,i) * math.pow(t,i) *math.pow(1-t,self.degree-i)
             
-            output[0] += multiplier * self.points[i][0]
-            output[1] += multiplier * self.points[i][1] 
+            output[0] += multiplier * point[0]
+            output[1] += multiplier * point[1] 
         return output
     

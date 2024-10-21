@@ -2,20 +2,22 @@ import math
 
 import pygame
 
+from common import Game_t as Game
 from common import MapCoordinates
 from scripts.bezier import Bezier
 from scripts.leg import Leg
+from scripts.tilemap import Tile
 from scripts.utils import load_sprite
 
 
 class Player:
-    def __init__(self, game, name: str, pos: MapCoordinates, sprite, size):
+    def __init__(self, game: Game, name: str, pos: MapCoordinates, sprite, size):
         self.game = game
         self.name = name
         self.sprite = load_sprite(game,sprite,size)
         self.size = size
         self.pos = list(pos)
-        self.velocity: list[float] = [0,0]
+        self.velocity = [0.,0.]
 
         self.speed = 2
         self.rotation = 0
@@ -30,28 +32,28 @@ class Player:
 
         self.time = 0
 
-    def vertical_offset(self):
+    def vertical_offset(self) -> int:
         return 0 #2*math.sin(self.time)
 
-    def center(self):
+    def center(self) -> list[int]:
         return [self.pos[0] + self.size[0]/2, self.pos[1] + self.size[1]/2]
 
 
 
-    def rect(self):
+    def rect(self) -> pygame.Rect:
         return pygame.Rect(*self.pos, *self.size)
 
 
-    def get_close_tiles(self):
+    def get_close_tiles(self) -> list[Tile]:
         tiles = []
-        x = int(self.pos[0]//self.game.TILESIZE)
-        y = int(self.pos[1]//self.game.TILESIZE)
+        x = self.pos[0]//self.game.TILESIZE
+        y = self.pos[1]//self.game.TILESIZE
 
         permutations = [(-2,-2),(-1,-1), (0,-1), (1,-1), (-1,0), (0,0), (1,0), (-1,1), (0,1), (1,1)]
         for permutation in permutations:
             key = ((x+permutation[0], y+permutation[1]))
             if key in self.game.tiles:
-                tiles.append(self.game.tiles[(x+permutation[0], y+permutation[1])])
+                tiles.append(self.game.tiles.get((x+permutation[0], y+permutation[1])))
 
         return tiles
 
@@ -112,7 +114,7 @@ class Player:
             self.allowed_jumps -= 1
             self.velocity[1] = -2
 
-    def render(self, display):
+    def render(self, display: pygame.Surface):
         frame_rotation = 0
 
         if self.collisions['down']:

@@ -1,5 +1,7 @@
 import pygame
-from scripts.utils import load_sprite, Line
+
+from scripts.utils import Line, load_sprite
+
 
 class Tile:
     def __init__(self, game, pos, tile_type, size, interactable = True):
@@ -10,7 +12,7 @@ class Tile:
         self.name = str(pos[0]) + ','+ str(pos[1])
         self.size = size
         self.sprite = load_sprite(game, tile_type, size)
-        self.edges = []
+        self.edges: list[Line] = []
         if interactable:
             self.edges.append(Line(pygame.Vector2(self.pos),pygame.Vector2(1,0)))
             self.edges.append(Line(pygame.Vector2(self.pos),pygame.Vector2(0,1)))

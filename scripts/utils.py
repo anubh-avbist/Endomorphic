@@ -1,16 +1,20 @@
+from typing import Any
+
 import pygame
 
 from common import Game_t as Game
+from common import MapCoordinates, Vector2Like
+
 
 class Line():
-    def __init__(self, start, direction):
+    def __init__(self, start, direction: pygame.Vector2):
         self.start = pygame.Vector2(start)
         self.direction = direction
 
-    def r(self, t):
+    def r(self, t: int | float) -> pygame.Vector2:
         return self.start + t * self.direction
 
-    def get_intersection_parameter(self, other_line):
+    def get_intersection_parameter(self, other_line: 'Line'):
         alpha = other_line.direction.x
         beta = other_line.direction.y
         x_1 = other_line.start.x
@@ -38,11 +42,10 @@ def load_sprite(game, sprite, size):
 def rotate_sprite(sprite, angle):
     pass
 
-def raycast(game, line: Line, length: int, step, tileset: dict):
-    
+def raycast(game, line: Line, length: int, step: int | float, tileset: dict[MapCoordinates, Any]) -> Vector2Like:
     line.direction = line.direction.normalize()
 
-    distance = 0 # Moves by one TILESIZE/2
+    distance: int | float = 0 # Moves by one TILESIZE/2
     current = line.start + line.direction * step
     tile = None
     while distance <= length:
@@ -53,7 +56,7 @@ def raycast(game, line: Line, length: int, step, tileset: dict):
                 break
         current = current + line.direction * step
         distance += step
-    if tile == None:
+    if tile is None:
         return [0,0] #line.start + line.direction*length
     else: 
         game.debug['highlight'] = tile
@@ -68,9 +71,8 @@ def raycast(game, line: Line, length: int, step, tileset: dict):
                 t = b
 
         if found:
-            
             return line.r(t)
         else:
-            return edge.r(length*1)
+            return edge.r(length*1) # type: ignore
 
 

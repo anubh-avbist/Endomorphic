@@ -1,14 +1,17 @@
-from typing import Sequence, Tuple, Union
+from typing import List, Sequence, Tuple
 
 from pygame import Color, Vector2
 
 RGBAOutput = Tuple[int, int, int, int]
-ColorValue = Union[Color, int, str, Tuple[int, int, int], RGBAOutput, Sequence[int]]
+ColorValue = Color | int | str | Tuple[int, int, int] | RGBAOutput | Sequence[int]
 
-IntoVector2 = str | float | Sequence[float] | Vector2
+Vector2Like = Vector2 | Tuple[int | float, int | float] | List[int | float]
 
 MapCoordinates = Tuple[int, int]
 
 
 class Game:
     pass
+
+
+Game_t = Game
