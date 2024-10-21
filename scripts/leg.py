@@ -1,11 +1,17 @@
-import pygame
-import math
-from scripts.bezier import Bezier
+import math # type: ignore
 import random
-from scripts.utils import raycast, Line
+
+import pygame
+
+from common import ColorValue
+from common import Game_t as Game
+from common import Vector2Like
+from scripts.bezier import Bezier
+from scripts.utils import Line, raycast
+
 
 class Leg(Bezier):
-    def __init__(self, game, points, length, color = (0,0,0), pixel_size = 2, segments = 100):
+    def __init__(self, game: Game, points: list[Vector2Like], length:int, color:ColorValue = (0,0,0), pixel_size = 2, segments = 100):
         self.game = game
         self.points = points
         self.color = color
@@ -19,7 +25,7 @@ class Leg(Bezier):
 
         self.orientation = -1 
 
-        self.destination = [0,0]
+        self.destination: Vector2Like = [0,0]
         self.ray = Line(self.start, pygame.Vector2(0,1).normalize())
         self.transitioning = False
         self.transition_time = 0.25
@@ -49,10 +55,10 @@ class Leg(Bezier):
                 self.transitioning = True
                 self.timer = 0
                 self.foot_path.points[0] = end
+                # print(repr(self.foot_path.points))
 
                 # Destination
             self.pick_destination()
-
 
             # Snap leg to circle
             direction = self.length*pygame.Vector2.normalize(direction)
@@ -60,14 +66,9 @@ class Leg(Bezier):
             new_end = start + direction
             self.points[self.degree] = [new_end.x, new_end.y]
 
-        
-
-
         # If transitioning
         if self.transitioning:
             self.transition()
-
-
 
         # Joint
         h = distance/2
@@ -80,7 +81,7 @@ class Leg(Bezier):
         self.foot_path.points[0] = self.points[self.degree]
         self.timer = 0
 
-        direction = [0,0.9]
+        direction: Vector2Like = [0,0.9]
         if self.game.player.frame_movement[0] > 0 :
             direction[0] = 1.5
         elif self.game.player.frame_movement[0] < 0:
@@ -108,15 +109,15 @@ class Leg(Bezier):
             if t>=1: 
                 self.transitioning = False
     
-    def debug(self, surf):
+    def debug(self, surf: pygame.Surface):
         pygame.draw.rect(surf, (50,255,50), (*self.destination, self.pixel_size,self.pixel_size))
         pygame.draw.rect(surf, (255,50,50), (*self.foot_path.points[0], self.pixel_size,self.pixel_size))
         pygame.draw.line(surf, (50,50,255), self.ray.start, self.ray.r(self.length))
 
-    def draw(self, surf):
+    def draw(self, surf: pygame.Surface):
         division = 1/self.segments
         t = 0
-        for i in range(0,self.segments):
+        for i in range(self.segments):
             pygame.draw.rect(surf,self.color, (*self.fun(t), self.pixel_size,self.pixel_size))
             t += division
 
