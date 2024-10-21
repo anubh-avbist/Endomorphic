@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 __pycache__
 .venv
+=======
+__pycache__/
+.venv/
+>>>>>>> dbb4d84 (yay)
