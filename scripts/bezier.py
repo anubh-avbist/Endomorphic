@@ -3,7 +3,7 @@ import math
 import random
 
 class Bezier:
-    def __init__(self, game, points, color = (0,0,0), pixel_size = 1, segments = 100):
+    def __init__(self, game, points: list, color = (0,0,0), pixel_size = 1, segments = 100):
         self.game = game
         self.points = points
         self.color = color

@@ -1,11 +1,15 @@
 import sys
+from typing import Any
 
 import pygame
-from scripts.player import Player
-from scripts.tilemap import Tilemap, Tile
+
 from scripts.bezier import Bezier
 from scripts.leg import Leg
+from scripts.player import Player
+from scripts.tilemap import Tile, Tilemap
 from scripts.utils import Line
+
+from common import MapCoordinates
 
 class Game:
     def __init__(self):
@@ -26,20 +30,20 @@ class Game:
             'default_tile' : pygame.image.load('assets/images/Tile.png')
         }
 
-        self.tiles = {
+        self.tiles: dict[MapCoordinates, Tile] = {
             (8,8): Tile(self,[8,8],'default_tile', (self.TILESIZE,self.TILESIZE)),
         }
 
         self.movement = [[False,False],[False,False]]
         self.player = Player(self, 'player', (5*self.TILESIZE,5*self.TILESIZE), 'ball', (self.TILESIZE*4/5,self.TILESIZE*4/5))
-        self.player.legs.append(Leg(self, [[50,50], [100, 0], [50,150]], 50, (30,30,30), 2, 50))
-        #self.player.legs.append(Leg(self, [[300,300], [100, 0], [500,150]], 30, (30,30,30), 2, 50))
+        self.player.legs.append(Leg(self, [[50,50], [100, 0], [50,150]], 50, pygame.Color(30,30,30), 2, 50))
+        # self.player.legs.append(Leg(self, [[300,300], [100, 0], [500,150]], 30, (30,30,30), 2, 50))
 
         self.level = Tilemap(self, (0,1), 'assets/maps/map.txt')
 
         self.delta_time = 1
 
-        self.debug = {"key": "value"}
+        self.debug: dict[str, Any] = {"key": "value"}
 
             
         

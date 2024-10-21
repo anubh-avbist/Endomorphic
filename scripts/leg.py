@@ -1,11 +1,15 @@
-import pygame
 import math
-from scripts.bezier import Bezier
 import random
-from scripts.utils import raycast, Line
+
+import pygame
+
+from common import ColorValue, IntoVector2, Game_t as Game
+from scripts.bezier import Bezier
+from scripts.utils import Line, raycast
+
 
 class Leg(Bezier):
-    def __init__(self, game, points, length, color = (0,0,0), pixel_size = 2, segments = 100):
+    def __init__(self, game: Game, points: list[IntoVector2], length:int, color:ColorValue = (0,0,0), pixel_size = 2, segments = 100):
         self.game = game
         self.points = points
         self.color = color
@@ -49,6 +53,7 @@ class Leg(Bezier):
                 self.transitioning = True
                 self.timer = 0
                 self.foot_path.points[0] = end
+                # print(repr(self.foot_path.points))
 
                 # Destination
             self.pick_destination()

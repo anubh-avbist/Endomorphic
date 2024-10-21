@@ -1,12 +1,44 @@
 import pygame
 
+from common import Game_t as Game
+
+class Line():
+    def __init__(self, start, direction):
+        self.start = pygame.Vector2(start)
+        self.direction = direction
+
+    def r(self, t):
+        return self.start + t * self.direction
+
+    def get_intersection_parameter(self, other_line):
+        alpha = other_line.direction.x
+        beta = other_line.direction.y
+        x_1 = other_line.start.x
+        y_1 = other_line.start.y
+
+        u = self.direction.x
+        v = self.direction.y
+        x_0 = self.start.x
+        y_0 = self.start.y
+
+        if (alpha*v-beta*u) != 0:
+            return (alpha*(y_1-y_0)-beta*(x_1-x_0))/(alpha*v-beta*u)
+        else: 
+            return -1
+
+    def get_intersection(self, other_line):
+        return self.r(self.get_intersection_parameter(other_line))
+
+    def draw(self, surf: pygame.Surface, range):
+        pygame.draw.line(surf, (0,0,0), self.start + self.direction*range[0], self.start + self.direction*range[1])
+
 def load_sprite(game, sprite, size):
     return pygame.transform.scale(game.assets[sprite], (size))
 
 def rotate_sprite(sprite, angle):
     pass
 
-def raycast(game, line, length, step, tileset):
+def raycast(game, line: Line, length: int, step, tileset: dict):
     
     line.direction = line.direction.normalize()
 
@@ -41,32 +73,4 @@ def raycast(game, line, length, step, tileset):
         else:
             return edge.r(length*1)
 
-class Line():
-    def __init__(self, start, direction):
-        self.start = pygame.Vector2(start)
-        self.direction = direction
 
-    def r(self, t):
-        return self.start + t * self.direction
-
-    def get_intersection_parameter(self, other_line):
-        alpha = other_line.direction.x
-        beta = other_line.direction.y
-        x_1 = other_line.start.x
-        y_1 = other_line.start.y
-
-        u = self.direction.x
-        v = self.direction.y
-        x_0 = self.start.x
-        y_0 = self.start.y
-
-        if (alpha*v-beta*u) != 0:
-            return (alpha*(y_1-y_0)-beta*(x_1-x_0))/(alpha*v-beta*u)
-        else: 
-            return -1
-
-    def get_intersection(self, other_line):
-        return self.r(self.get_intersection_parameter(other_line))
-
-    def draw(self, surf, range):
-        pygame.draw.line(surf, (0,0,0), self.start + self.direction*range[0], self.start + self.direction*range[1])
