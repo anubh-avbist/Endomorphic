@@ -98,7 +98,7 @@ class Game:
             for key in self.tiles:
                 tile = self.tiles[key]
                 for edge in tile.edges:
-                    #edge.draw(self.display, [0,self.TILESIZE])
+                    # edge.draw(self.display, [0,self.TILESIZE])
                     pass
 
 
@@ -112,7 +112,7 @@ class Game:
             self.screen.blit(pygame.transform.scale((self.display),self.screen.get_size()), (0,0))
             pygame.display.update()
             self.delta_time = self.clock.tick(self.FPS)
-            #print(self.clock.get_fps())
+            # print(self.clock.get_fps())
 
 
 game = Game()

@@ -1,4 +1,4 @@
-import math
+import math # type: ignore
 
 import pygame
 
@@ -11,7 +11,7 @@ from scripts.utils import load_sprite
 
 
 class Player:
-    def __init__(self, game: Game, name: str, pos: MapCoordinates, sprite, size):
+    def __init__(self, game: Game, name: str, pos: MapCoordinates, sprite: str, size: Vector2Like):
         self.game = game
         self.name = name
         self.sprite = load_sprite(game,sprite,size)

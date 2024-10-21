@@ -19,6 +19,7 @@ Vector2Like = (
     | Tuple[int | float, int | float]
     | List[int]
     | List[float]
+    | List[int | float]
 )
 
 MapCoordinates = Tuple[int, int]

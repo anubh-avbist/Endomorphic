@@ -33,7 +33,7 @@ class Line():
     def get_intersection(self, other_line: 'Line') -> pygame.Vector2:
         return self.r(self.get_intersection_parameter(other_line))
 
-    def draw(self, surf: pygame.Surface, range):
+    def draw(self, surf: pygame.Surface, range: Vector2Like):
         pygame.draw.line(surf, (0,0,0), self.start + self.direction*range[0], self.start + self.direction*range[1])
 
 def load_sprite(game: Game, sprite: str, size: Vector2Like) -> pygame.Surface:

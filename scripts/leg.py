@@ -1,4 +1,4 @@
-import math
+import math # type: ignore
 import random
 
 import pygame
